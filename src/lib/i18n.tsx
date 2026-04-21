@@ -64,7 +64,7 @@ const en: Dict = {
   "footer.product": "Product",
   "footer.builtwith": "Built with",
   "footer.company": "Company",
-  "footer.copy": "Crafted for senior portfolios.",
+  "footer.copy": "Valuing your time by leveraging.",
   // auth
   "login.title": "Welcome back",
   "login.desc": "Log in to manage your campaigns.",
