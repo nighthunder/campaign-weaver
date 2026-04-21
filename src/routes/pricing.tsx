@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { store, useStore } from "@/lib/mock-store";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
@@ -16,46 +17,47 @@ export const Route = createFileRoute("/pricing")({
   }),
 });
 
-const plans = [
-  {
-    id: "free" as const,
-    name: "Starter",
-    price: "$0",
-    cadence: "forever",
-    desc: "Test the queue. Send your first newsletter.",
-    features: ["2,000 emails / month", "1 contact list", "Basic delivery report", "Community support"],
-    cta: "Get started",
-    accent: false,
-  },
-  {
-    id: "growth" as const,
-    name: "Growth",
-    price: "$29",
-    cadence: "/ month",
-    desc: "For serious senders with retry & DLQ insights.",
-    features: ["50,000 emails / month", "Unlimited lists", "Open & click tracking", "Retry + dead-letter dashboard", "Priority queue", "Email support"],
-    cta: "Upgrade to Growth",
-    accent: true,
-  },
-  {
-    id: "scale" as const,
-    name: "Scale",
-    price: "$149",
-    cadence: "/ month",
-    desc: "Horizon autoscaling. Webhooks. SLA.",
-    features: ["1,000,000 emails / month", "Dedicated workers", "Custom webhooks", "99.99% SLA", "SAML SSO", "Slack support"],
-    cta: "Go Scale",
-    accent: false,
-  },
-];
-
 function PricingPage() {
   const { user } = useStore();
+  const { t } = useI18n();
+
+  const plans = [
+    {
+      id: "free" as const,
+      name: t("pricing.starter.name"),
+      price: "$0",
+      cadence: t("pricing.cadence.forever"),
+      desc: t("pricing.starter.desc"),
+      features: ["2,000 emails / month", "1 contact list", "Basic delivery report", "Community support"],
+      cta: t("pricing.starter.cta"),
+      accent: false,
+    },
+    {
+      id: "growth" as const,
+      name: t("pricing.growth.name"),
+      price: "$29",
+      cadence: t("pricing.cadence.month"),
+      desc: t("pricing.growth.desc"),
+      features: ["50,000 emails / month", "Unlimited lists", "Open & click tracking", "Retry + DLQ dashboard", "Priority queue", "Email support"],
+      cta: t("pricing.growth.cta"),
+      accent: true,
+    },
+    {
+      id: "scale" as const,
+      name: t("pricing.scale.name"),
+      price: "$149",
+      cadence: t("pricing.cadence.month"),
+      desc: t("pricing.scale.desc"),
+      features: ["1,000,000 emails / month", "Dedicated workers", "Custom webhooks", "99.99% SLA", "SAML SSO", "Slack support"],
+      cta: t("pricing.scale.cta"),
+      accent: false,
+    },
+  ];
 
   const onChoose = (id: "free" | "growth" | "scale") => {
-    if (!user) { toast.info("Sign up first to choose a plan."); return; }
+    if (!user) { toast.info(t("pricing.signup_first")); return; }
     store.setPlan(id);
-    toast.success(`You're on the ${id.charAt(0).toUpperCase()}${id.slice(1)} plan!`);
+    toast.success(t("pricing.plan_set", { plan: id.charAt(0).toUpperCase() + id.slice(1) }));
   };
 
   return (
@@ -63,9 +65,9 @@ function PricingPage() {
       <SiteHeader />
       <section className="border-b-2 border-ink py-20">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6">
-          <p className="text-sm font-bold uppercase tracking-widest text-accent">Pricing</p>
-          <h1 className="mt-2 font-display text-5xl font-bold md:text-6xl">Pay for what you send.</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">Start free. Scale when your queue does.</p>
+          <p className="text-sm font-bold uppercase tracking-widest text-accent">{t("pricing.eyebrow")}</p>
+          <h1 className="mt-2 font-display text-5xl font-bold md:text-6xl">{t("pricing.title")}</h1>
+          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("pricing.desc")}</p>
         </div>
       </section>
 
@@ -80,7 +82,7 @@ function PricingPage() {
             >
               {p.accent && (
                 <span className="inline-block rounded-full border-2 border-ink bg-ink px-3 py-1 text-xs font-bold uppercase tracking-wide text-cream">
-                  Most popular
+                  {t("pricing.popular")}
                 </span>
               )}
               <h3 className="mt-2 font-display text-2xl font-bold">{p.name}</h3>
@@ -97,7 +99,7 @@ function PricingPage() {
                     : "bg-cream text-ink hover:bg-cream shadow-brutal-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
                 }`}
               >
-                {user?.plan === p.id ? "Current plan" : p.cta}
+                {user?.plan === p.id ? t("pricing.current") : p.cta}
               </Button>
               <ul className="mt-6 space-y-2 text-sm">
                 {p.features.map((f) => (
