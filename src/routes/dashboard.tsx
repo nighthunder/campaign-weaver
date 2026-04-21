@@ -4,6 +4,7 @@ import { useStore } from "@/lib/mock-store";
 import { Button } from "@/components/ui/button";
 import { Send, Users, Workflow, TrendingUp, ArrowRight } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, BarChart, Bar, CartesianGrid } from "recharts";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
@@ -24,15 +25,16 @@ const queueData = [
 
 function Dashboard() {
   const { user, campaigns, lists, jobs } = useStore();
+  const { t } = useI18n();
   const stats = [
-    { label: "Emails sent (30d)", value: campaigns.reduce((s, c) => s + c.delivered, 0).toLocaleString(), icon: Send, color: "primary" },
-    { label: "Active contacts", value: lists.reduce((s, l) => s + l.count, 0).toLocaleString(), icon: Users, color: "accent" },
-    { label: "Jobs in queue", value: jobs.filter(j => j.status === "pending" || j.status === "processing").length.toString(), icon: Workflow, color: "warning" },
-    { label: "Avg open rate", value: "43.2%", icon: TrendingUp, color: "success" },
+    { label: t("dash.stat.sent"), value: campaigns.reduce((s, c) => s + c.delivered, 0).toLocaleString(), icon: Send, color: "primary" },
+    { label: t("dash.stat.contacts"), value: lists.reduce((s, l) => s + l.count, 0).toLocaleString(), icon: Users, color: "accent" },
+    { label: t("dash.stat.queued"), value: jobs.filter(j => j.status === "pending" || j.status === "processing").length.toString(), icon: Workflow, color: "warning" },
+    { label: t("dash.stat.openrate"), value: "43.2%", icon: TrendingUp, color: "success" },
   ];
 
   return (
-    <AppShell title={`Hi ${user?.name ?? "there"} 👋`}>
+    <AppShell title={t("dash.greeting", { name: user?.name ?? "there" })}>
       <div className="grid gap-4 md:grid-cols-4">
         {stats.map((s) => (
           <div key={s.label} className="rounded-xl border-2 border-ink bg-card p-5 shadow-brutal-sm">
@@ -48,8 +50,8 @@ function Dashboard() {
       <div className="mt-6 grid gap-4 lg:grid-cols-3">
         <div className="rounded-xl border-2 border-ink bg-card p-5 shadow-brutal-sm lg:col-span-2">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-display text-lg font-bold">Sends vs Opens (last 14 days)</h2>
-            <Link to="/reports"><Button variant="outline" size="sm" className="border-2 border-ink">Reports <ArrowRight className="ml-1 h-3 w-3" /></Button></Link>
+            <h2 className="font-display text-lg font-bold">{t("dash.chart.sends")}</h2>
+            <Link to="/reports"><Button variant="outline" size="sm" className="border-2 border-ink">{t("dash.reports")} <ArrowRight className="ml-1 h-3 w-3" /></Button></Link>
           </div>
           <div className="h-64">
             <ResponsiveContainer>
@@ -65,7 +67,7 @@ function Dashboard() {
           </div>
         </div>
         <div className="rounded-xl border-2 border-ink bg-card p-5 shadow-brutal-sm">
-          <h2 className="mb-4 font-display text-lg font-bold">Queue throughput</h2>
+          <h2 className="mb-4 font-display text-lg font-bold">{t("dash.chart.queues")}</h2>
           <div className="h-64">
             <ResponsiveContainer>
               <BarChart data={queueData}>
@@ -83,15 +85,15 @@ function Dashboard() {
 
       <div className="mt-6 rounded-xl border-2 border-ink bg-card p-5 shadow-brutal-sm">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-display text-lg font-bold">Recent campaigns</h2>
-          <Link to="/campaigns"><Button size="sm" className="bg-primary text-ink border-2 border-ink shadow-brutal-sm hover:bg-primary hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none">+ New campaign</Button></Link>
+          <h2 className="font-display text-lg font-bold">{t("dash.recent")}</h2>
+          <Link to="/campaigns"><Button size="sm" className="bg-primary text-ink border-2 border-ink shadow-brutal-sm hover:bg-primary hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none">{t("dash.new")}</Button></Link>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b-2 border-ink text-left text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                <th className="py-2 pr-4">Name</th><th className="pr-4">Audience</th><th className="pr-4">Status</th>
-                <th className="pr-4">Recipients</th><th className="pr-4">Open rate</th>
+                <th className="py-2 pr-4">{t("dash.col.name")}</th><th className="pr-4">{t("dash.col.audience")}</th><th className="pr-4">{t("dash.col.status")}</th>
+                <th className="pr-4">{t("dash.col.recipients")}</th><th className="pr-4">{t("dash.col.openrate")}</th>
               </tr>
             </thead>
             <tbody>
@@ -113,6 +115,7 @@ function Dashboard() {
 }
 
 export function StatusBadge({ status }: { status: string }) {
+  const { t } = useI18n();
   const map: Record<string, string> = {
     sent: "bg-success text-success-foreground",
     sending: "bg-warning text-warning-foreground",
@@ -124,9 +127,16 @@ export function StatusBadge({ status }: { status: string }) {
     completed: "bg-success text-success-foreground",
     dlq: "bg-destructive text-destructive-foreground",
   };
+  const labelMap: Record<string, string> = {
+    pending: t("jobs.s.pending"),
+    processing: t("jobs.s.processing"),
+    completed: t("jobs.s.completed"),
+    failed: t("jobs.s.failed"),
+    dlq: t("jobs.s.dlq"),
+  };
   return (
     <span className={`inline-block rounded-full border-2 border-ink px-2 py-0.5 text-xs font-bold capitalize ${map[status] ?? "bg-secondary"}`}>
-      {status}
+      {labelMap[status] ?? status}
     </span>
   );
 }

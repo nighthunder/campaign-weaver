@@ -2,18 +2,20 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { LayoutDashboard, Send, Users, Workflow, BarChart3 } from "lucide-react";
 import { Logo } from "./Logo";
 import { useStore } from "@/lib/mock-store";
-
-const items = [
-  { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { to: "/campaigns", label: "Campaigns", icon: Send },
-  { to: "/contacts", label: "Contacts", icon: Users },
-  { to: "/jobs", label: "Jobs & Queues", icon: Workflow },
-  { to: "/reports", label: "Reports", icon: BarChart3 },
-] as const;
+import { useI18n } from "@/lib/i18n";
 
 export function AppSidebar() {
   const loc = useLocation();
   const { user } = useStore();
+  const { t } = useI18n();
+
+  const items = [
+    { to: "/dashboard", label: t("side.overview"), icon: LayoutDashboard },
+    { to: "/campaigns", label: t("side.campaigns"), icon: Send },
+    { to: "/contacts", label: t("side.contacts"), icon: Users },
+    { to: "/jobs", label: t("side.jobs"), icon: Workflow },
+    { to: "/reports", label: t("side.reports"), icon: BarChart3 },
+  ] as const;
 
   return (
     <aside className="hidden w-64 shrink-0 border-r-2 border-ink bg-cream md:flex md:flex-col">
@@ -41,9 +43,9 @@ export function AppSidebar() {
       {user && (
         <div className="border-t-2 border-ink p-4">
           <div className="rounded-lg border-2 border-ink bg-card p-3">
-            <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Plan</p>
+            <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">{t("side.plan")}</p>
             <p className="font-display text-lg font-bold capitalize">{user.plan}</p>
-            <Link to="/pricing" className="mt-1 inline-block text-xs font-bold underline">Upgrade →</Link>
+            <Link to="/pricing" className="mt-1 inline-block text-xs font-bold underline">{t("side.upgrade")}</Link>
           </div>
         </div>
       )}

@@ -4,6 +4,7 @@ import { ArrowRight, Zap, Repeat, Shield, BarChart3, Upload, Workflow } from "lu
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -31,6 +32,7 @@ function Landing() {
 }
 
 function Hero() {
+  const { t } = useI18n();
   return (
     <section className="relative overflow-hidden border-b-2 border-ink">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 md:grid-cols-2 md:py-28">
@@ -40,22 +42,21 @@ function Hero() {
             className="inline-flex w-fit items-center gap-2 rounded-full border-2 border-ink bg-primary px-3 py-1 text-xs font-bold uppercase tracking-wide shadow-brutal-sm"
           >
             <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
-            Powered by Laravel Queues
+            {t("hero.badge")}
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
             className="mt-6 font-display text-5xl font-bold leading-[1.05] tracking-tight md:text-7xl"
           >
-            Send <span className="squiggle">millions</span><br />
-            of emails.<br />
-            Sweat <em className="not-italic text-accent">zero</em> drops.
+            {t("hero.title.1")} <span className="squiggle">{t("hero.title.2")}</span><br />
+            {t("hero.title.3")}<br />
+            {t("hero.title.4")} <em className="not-italic text-accent">{t("hero.title.5")}</em> {t("hero.title.6")}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             className="mt-6 max-w-lg text-lg text-muted-foreground"
           >
-            Mailburst is a campaign platform built on Redis-backed Laravel queues with retry,
-            dead-letter routing, and a real-time job dashboard. No HTTP timeouts. No lost messages.
+            {t("hero.desc")}
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
@@ -63,16 +64,16 @@ function Hero() {
           >
             <Link to="/signup">
               <Button size="lg" className="h-12 bg-primary text-ink border-2 border-ink shadow-brutal hover:bg-primary hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-brutal-sm transition text-base font-bold">
-                Start sending free <ArrowRight className="ml-2 h-4 w-4" />
+                {t("hero.cta.start")} <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link to="/pricing">
               <Button size="lg" variant="outline" className="h-12 border-2 border-ink bg-cream shadow-brutal-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition text-base font-bold">
-                See pricing
+                {t("hero.cta.pricing")}
               </Button>
             </Link>
           </motion.div>
-          <p className="mt-4 text-xs text-muted-foreground">No credit card. 2,000 free emails/month forever.</p>
+          <p className="mt-4 text-xs text-muted-foreground">{t("hero.cta.note")}</p>
         </div>
 
         <HeroVisual />
@@ -82,6 +83,7 @@ function Hero() {
 }
 
 function HeroVisual() {
+  const { t } = useI18n();
   return (
     <div className="relative">
       <motion.div
@@ -96,9 +98,9 @@ function HeroVisual() {
         </div>
         <div className="mt-4 grid grid-cols-3 gap-3">
           {[
-            { l: "Throughput", v: "12,480/min", c: "primary" },
-            { l: "Workers", v: "32", c: "accent" },
-            { l: "Failed", v: "0.02%", c: "success" },
+            { l: t("hero.visual.throughput"), v: "12,480/min" },
+            { l: t("hero.visual.workers"), v: "32" },
+            { l: t("hero.visual.failed"), v: "0.02%" },
           ].map((s) => (
             <div key={s.l} className="rounded-lg border-2 border-ink bg-cream p-3">
               <p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">{s.l}</p>
@@ -129,26 +131,27 @@ function HeroVisual() {
         transition={{ duration: 6, repeat: Infinity }}
         className="absolute -right-4 -top-6 hidden rounded-xl border-2 border-ink bg-accent px-3 py-2 text-sm font-bold text-accent-foreground shadow-brutal-sm md:block"
       >
-        Retry × 5 → DLQ
+        {t("hero.visual.retry")}
       </motion.div>
       <motion.div
         animate={{ y: [0, -6, 0] }}
         transition={{ duration: 4, repeat: Infinity }}
         className="absolute -bottom-4 -left-4 hidden rounded-xl border-2 border-ink bg-success px-3 py-2 text-sm font-bold text-success-foreground shadow-brutal-sm md:block"
       >
-        99.97% delivered ✓
+        {t("hero.visual.delivered")}
       </motion.div>
     </div>
   );
 }
 
 function LogoBar() {
+  const { t } = useI18n();
   return (
     <section className="border-b-2 border-ink bg-ink py-8 text-cream">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-12 gap-y-4 px-4">
-        <span className="text-xs font-bold uppercase tracking-widest text-cream/50">Built on</span>
-        {["Laravel 11", "Redis", "Horizon", "Sanctum", "Stripe", "Docker"].map((t) => (
-          <span key={t} className="font-display text-lg font-bold text-cream/90">{t}</span>
+        <span className="text-xs font-bold uppercase tracking-widest text-cream/50">{t("logobar.builton")}</span>
+        {["Laravel 11", "Redis", "Horizon", "Sanctum", "Stripe", "Docker"].map((x) => (
+          <span key={x} className="font-display text-lg font-bold text-cream/90">{x}</span>
         ))}
       </div>
     </section>
@@ -156,22 +159,21 @@ function LogoBar() {
 }
 
 function Features() {
+  const { t } = useI18n();
   const items = [
-    { icon: Upload, title: "Bulk import contacts", desc: "Drop a CSV with 500k rows. Streamed and chunked into the queue without blocking the request." },
-    { icon: Workflow, title: "Async campaign sends", desc: "Each batch is a dispatched Job. No 30-second timeouts, no lost recipients." },
-    { icon: Repeat, title: "Retry with backoff", desc: "Configurable tries + exponential backoff. Transient SMTP failures auto-recover." },
-    { icon: Shield, title: "Dead-letter queue", desc: "Permanently-failed jobs land in a DLQ for inspection and manual replay." },
-    { icon: BarChart3, title: "Delivery reports", desc: "Opens, clicks, bounces, complaints — aggregated per campaign in real time." },
-    { icon: Zap, title: "Horizon dashboard", desc: "Watch workers, throughput, and failed jobs live. Built-in to every install." },
+    { icon: Upload, title: t("features.bulk.t"), desc: t("features.bulk.d") },
+    { icon: Workflow, title: t("features.async.t"), desc: t("features.async.d") },
+    { icon: Repeat, title: t("features.retry.t"), desc: t("features.retry.d") },
+    { icon: Shield, title: t("features.dlq.t"), desc: t("features.dlq.d") },
+    { icon: BarChart3, title: t("features.reports.t"), desc: t("features.reports.d") },
+    { icon: Zap, title: t("features.horizon.t"), desc: t("features.horizon.d") },
   ];
   return (
     <section className="border-b-2 border-ink py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mb-12 max-w-2xl">
-          <p className="text-sm font-bold uppercase tracking-widest text-accent">The toolkit</p>
-          <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">
-            Concurrency, resilience, observability — out of the box.
-          </h2>
+          <p className="text-sm font-bold uppercase tracking-widest text-accent">{t("features.eyebrow")}</p>
+          <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">{t("features.title")}</h2>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           {items.map((it, i) => (
@@ -195,18 +197,19 @@ function Features() {
 }
 
 function HowItWorks() {
+  const { t } = useI18n();
   const steps = [
-    { n: "01", t: "Upload your list", d: "Stream CSV → contacts table. Background job parses millions of rows." },
-    { n: "02", t: "Compose & schedule", d: "Visual editor with merge tags. Personalize per-recipient." },
-    { n: "03", t: "Dispatch to Redis", d: "Campaign chunked into 250-recipient batches, each a Laravel Job." },
-    { n: "04", t: "Workers fan out", d: "Horizon balances workers across emails / reports / default queues." },
-    { n: "05", t: "Retry or DLQ", d: "Failures retry up to 5× with exponential backoff. Then dead-letter." },
-    { n: "06", t: "Track everything", d: "Webhooks update delivery, opens, clicks. Dashboards in real time." },
+    { n: "01", t: t("how.1.t"), d: t("how.1.d") },
+    { n: "02", t: t("how.2.t"), d: t("how.2.d") },
+    { n: "03", t: t("how.3.t"), d: t("how.3.d") },
+    { n: "04", t: t("how.4.t"), d: t("how.4.d") },
+    { n: "05", t: t("how.5.t"), d: t("how.5.d") },
+    { n: "06", t: t("how.6.t"), d: t("how.6.d") },
   ];
   return (
     <section className="border-b-2 border-ink bg-primary py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <h2 className="mb-12 font-display text-4xl font-bold md:text-5xl">From upload to inbox in 6 steps.</h2>
+        <h2 className="mb-12 font-display text-4xl font-bold md:text-5xl">{t("how.title")}</h2>
         <div className="grid gap-4 md:grid-cols-3">
           {steps.map((s) => (
             <div key={s.n} className="rounded-xl border-2 border-ink bg-cream p-6 shadow-brutal-sm">
@@ -222,17 +225,14 @@ function HowItWorks() {
 }
 
 function StackSection() {
+  const { t } = useI18n();
   return (
     <section className="border-b-2 border-ink py-20">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 md:grid-cols-2 md:items-center">
         <div>
-          <p className="text-sm font-bold uppercase tracking-widest text-accent">Architecture</p>
-          <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">A backend that scales the way it should.</h2>
-          <p className="mt-4 text-muted-foreground">
-            Mailburst is built on Laravel 11, Redis, and Horizon. The HTTP layer never sends an email itself —
-            it dispatches Jobs that workers process concurrently. Failed jobs auto-retry, then graduate to a
-            dead-letter queue you can inspect and replay.
-          </p>
+          <p className="text-sm font-bold uppercase tracking-widest text-accent">{t("stack.eyebrow")}</p>
+          <h2 className="mt-2 font-display text-4xl font-bold md:text-5xl">{t("stack.title")}</h2>
+          <p className="mt-4 text-muted-foreground">{t("stack.desc")}</p>
           <ul className="mt-6 space-y-2 text-sm">
             {[
               "Laravel Queue (Redis driver)",
@@ -241,9 +241,9 @@ function StackSection() {
               "Stripe for subscriptions",
               "Pest for tests, Pint for lint",
               "Docker Compose for one-command boot",
-            ].map((t) => (
-              <li key={t} className="flex items-start gap-2">
-                <span className="mt-1 h-2 w-2 rounded-full bg-accent" /> {t}
+            ].map((x) => (
+              <li key={x} className="flex items-start gap-2">
+                <span className="mt-1 h-2 w-2 rounded-full bg-accent" /> {x}
               </li>
             ))}
           </ul>
@@ -281,14 +281,15 @@ class SendCampaignBatchJob implements ShouldQueue
 }
 
 function CTA() {
+  const { t } = useI18n();
   return (
     <section className="bg-accent py-20 text-accent-foreground">
       <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
-        <h2 className="font-display text-4xl font-bold md:text-6xl">Ready to launch your first campaign?</h2>
-        <p className="mt-4 text-lg opacity-90">Free forever for up to 2,000 emails per month.</p>
+        <h2 className="font-display text-4xl font-bold md:text-6xl">{t("cta.title")}</h2>
+        <p className="mt-4 text-lg opacity-90">{t("cta.desc")}</p>
         <Link to="/signup">
           <Button size="lg" className="mt-8 h-14 bg-cream text-ink border-2 border-ink shadow-brutal hover:bg-cream hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-brutal-sm transition text-base font-bold">
-            Create your account <ArrowRight className="ml-2 h-4 w-4" />
+            {t("cta.button")} <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>
       </div>

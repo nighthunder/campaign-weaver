@@ -6,6 +6,7 @@ import { useStore, store } from "@/lib/mock-store";
 import { Plus, Send } from "lucide-react";
 import { StatusBadge } from "./dashboard";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/campaigns")({
   component: CampaignsPage,
@@ -14,17 +15,18 @@ export const Route = createFileRoute("/campaigns")({
 
 function CampaignsPage() {
   const { campaigns } = useStore();
+  const { t } = useI18n();
   const [creating, setCreating] = useState(false);
 
   return (
-    <AppShell title="Campaigns">
+    <AppShell title={t("side.campaigns")}>
       <div className="mb-6 flex items-center justify-between">
-        <p className="text-muted-foreground">Compose, schedule, and dispatch to the queue.</p>
+        <p className="text-muted-foreground">{t("camp.subtitle")}</p>
         <Button
           onClick={() => setCreating(true)}
           className="bg-primary text-ink border-2 border-ink shadow-brutal-sm hover:bg-primary hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none font-bold"
         >
-          <Plus className="mr-1 h-4 w-4" /> New campaign
+          <Plus className="mr-1 h-4 w-4" /> {t("camp.new")}
         </Button>
       </div>
 
@@ -42,22 +44,19 @@ function CampaignsPage() {
             </div>
             <p className="mt-3 line-clamp-2 text-sm">{c.subject}</p>
             <div className="mt-4 grid grid-cols-3 gap-2 border-t-2 border-ink pt-3 text-center">
-              <Stat label="Sent" value={c.delivered.toLocaleString()} />
-              <Stat label="Opens" value={c.delivered ? `${((c.opened / c.delivered) * 100).toFixed(0)}%` : "—"} />
-              <Stat label="Clicks" value={c.delivered ? `${((c.clicked / c.delivered) * 100).toFixed(0)}%` : "—"} />
+              <Stat label={t("camp.stat.sent")} value={c.delivered.toLocaleString()} />
+              <Stat label={t("camp.stat.opens")} value={c.delivered ? `${((c.opened / c.delivered) * 100).toFixed(0)}%` : "—"} />
+              <Stat label={t("camp.stat.clicks")} value={c.delivered ? `${((c.clicked / c.delivered) * 100).toFixed(0)}%` : "—"} />
             </div>
             {c.status === "draft" && (
               <Button
-                onClick={() => {
-                  store.enqueueCampaign(c.id);
-                  toast.success("Dispatched to queue!");
-                }}
+                onClick={() => { store.enqueueCampaign(c.id); toast.success(t("camp.dispatched")); }}
                 className="mt-4 w-full bg-ink text-cream border-2 border-ink hover:bg-ink shadow-brutal-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none font-bold"
               >
-                <Send className="mr-1 h-4 w-4" /> Dispatch
+                <Send className="mr-1 h-4 w-4" /> {t("camp.dispatch")}
               </Button>
             )}
-            <Link to="/jobs" className="mt-3 block text-center text-xs font-bold underline text-muted-foreground">View jobs →</Link>
+            <Link to="/jobs" className="mt-3 block text-center text-xs font-bold underline text-muted-foreground">{t("camp.viewjobs")}</Link>
           </div>
         ))}
       </div>
@@ -76,6 +75,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 
 function NewCampaign({ onClose }: { onClose: () => void }) {
   const { lists } = useStore();
+  const { t } = useI18n();
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [subject, setSubject] = useState("");
@@ -85,7 +85,7 @@ function NewCampaign({ onClose }: { onClose: () => void }) {
   const [audience, setAudience] = useState(lists[0]?.name ?? "");
 
   const create = (dispatch: boolean) => {
-    if (!name || !subject) { toast.error("Name and subject are required"); return; }
+    if (!name || !subject) { toast.error(t("camp.required")); return; }
     const list = lists.find((l) => l.name === audience);
     const c = store.addCampaign({
       name, subject, fromName, fromEmail, body, audience,
@@ -93,15 +93,15 @@ function NewCampaign({ onClose }: { onClose: () => void }) {
       recipients: list?.count ?? 0,
     });
     if (dispatch) store.enqueueCampaign(c.id);
-    toast.success(dispatch ? "Campaign dispatched!" : "Draft saved");
+    toast.success(dispatch ? t("camp.dispatched") : t("camp.draft_saved"));
     onClose();
   };
 
   return (
     <div className="mb-6 rounded-2xl border-2 border-ink bg-card p-6 shadow-brutal">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="font-display text-xl font-bold">New campaign — Step {step} of 3</h2>
-        <button onClick={onClose} className="text-sm font-bold underline">Cancel</button>
+        <h2 className="font-display text-xl font-bold">{t("camp.step", { n: step })}</h2>
+        <button onClick={onClose} className="text-sm font-bold underline">{t("camp.cancel")}</button>
       </div>
       <div className="mb-4 flex gap-2">
         {[1, 2, 3].map((n) => (
@@ -111,8 +111,8 @@ function NewCampaign({ onClose }: { onClose: () => void }) {
 
       {step === 1 && (
         <div className="space-y-4">
-          <Field label="Campaign name"><input value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-md border-2 border-ink bg-cream px-3 py-2 outline-none" placeholder="Spring Launch 2025" /></Field>
-          <Field label="Audience">
+          <Field label={t("camp.field.name")}><input value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-md border-2 border-ink bg-cream px-3 py-2 outline-none" placeholder="Spring Launch 2025" /></Field>
+          <Field label={t("camp.field.audience")}>
             <select value={audience} onChange={(e) => setAudience(e.target.value)} className="w-full rounded-md border-2 border-ink bg-cream px-3 py-2 outline-none">
               {lists.map((l) => <option key={l.id}>{l.name}</option>)}
             </select>
@@ -122,19 +122,19 @@ function NewCampaign({ onClose }: { onClose: () => void }) {
       {step === 2 && (
         <div className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="From name"><input value={fromName} onChange={(e) => setFromName(e.target.value)} className="w-full rounded-md border-2 border-ink bg-cream px-3 py-2 outline-none" /></Field>
-            <Field label="From email"><input value={fromEmail} onChange={(e) => setFromEmail(e.target.value)} className="w-full rounded-md border-2 border-ink bg-cream px-3 py-2 outline-none" /></Field>
+            <Field label={t("camp.field.fromname")}><input value={fromName} onChange={(e) => setFromName(e.target.value)} className="w-full rounded-md border-2 border-ink bg-cream px-3 py-2 outline-none" /></Field>
+            <Field label={t("camp.field.fromemail")}><input value={fromEmail} onChange={(e) => setFromEmail(e.target.value)} className="w-full rounded-md border-2 border-ink bg-cream px-3 py-2 outline-none" /></Field>
           </div>
-          <Field label="Subject line"><input value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full rounded-md border-2 border-ink bg-cream px-3 py-2 outline-none" placeholder="🌸 Something fresh just dropped" /></Field>
+          <Field label={t("camp.field.subject")}><input value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full rounded-md border-2 border-ink bg-cream px-3 py-2 outline-none" placeholder="🌸 Something fresh just dropped" /></Field>
         </div>
       )}
       {step === 3 && (
         <div className="grid gap-4 lg:grid-cols-2">
-          <Field label="Body (use {{first_name}}, {{email}} for merge tags)">
+          <Field label={t("camp.field.body")}>
             <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={14} className="w-full rounded-md border-2 border-ink bg-cream px-3 py-2 font-mono text-sm outline-none" />
           </Field>
           <div>
-            <p className="mb-2 text-sm font-bold uppercase tracking-wide text-muted-foreground">Preview</p>
+            <p className="mb-2 text-sm font-bold uppercase tracking-wide text-muted-foreground">{t("camp.preview")}</p>
             <div className="rounded-lg border-2 border-ink bg-cream p-4">
               <p className="text-xs text-muted-foreground">From: {fromName} &lt;{fromEmail}&gt;</p>
               <p className="font-bold">Subject: {subject || "(no subject)"}</p>
@@ -146,17 +146,17 @@ function NewCampaign({ onClose }: { onClose: () => void }) {
       )}
 
       <div className="mt-6 flex justify-between">
-        <Button variant="outline" disabled={step === 1} onClick={() => setStep(step - 1)} className="border-2 border-ink">Back</Button>
+        <Button variant="outline" disabled={step === 1} onClick={() => setStep(step - 1)} className="border-2 border-ink">{t("camp.back")}</Button>
         <div className="flex gap-2">
           {step === 3 ? (
             <>
-              <Button variant="outline" onClick={() => create(false)} className="border-2 border-ink">Save as draft</Button>
+              <Button variant="outline" onClick={() => create(false)} className="border-2 border-ink">{t("camp.save_draft")}</Button>
               <Button onClick={() => create(true)} className="bg-primary text-ink border-2 border-ink shadow-brutal-sm hover:bg-primary hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none font-bold">
-                <Send className="mr-1 h-4 w-4" /> Dispatch to queue
+                <Send className="mr-1 h-4 w-4" /> {t("camp.dispatch_queue")}
               </Button>
             </>
           ) : (
-            <Button onClick={() => setStep(step + 1)} className="bg-primary text-ink border-2 border-ink shadow-brutal-sm hover:bg-primary hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none font-bold">Next</Button>
+            <Button onClick={() => setStep(step + 1)} className="bg-primary text-ink border-2 border-ink shadow-brutal-sm hover:bg-primary hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none font-bold">{t("camp.next")}</Button>
           )}
         </div>
       </div>
