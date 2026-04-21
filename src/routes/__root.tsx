@@ -1,6 +1,5 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
-import { I18nProvider } from "@/lib/i18n";
 
 import appCss from "../styles.css?url";
 
@@ -31,14 +30,18 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Mail Burst" },
+      { name: "description", content: "Send millions of emails without sweating." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Mail Burst" },
+      { property: "og:description", content: "Send millions of emails without sweating." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Mail Burst" },
+      { name: "twitter:description", content: "Send millions of emails without sweating." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1eef1726-3896-4aa2-b520-b30732fdb935/id-preview-f1464c89--605b5f1c-f126-4157-9bca-542e735b6aad.lovable.app-1776815147457.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1eef1726-3896-4aa2-b520-b30732fdb935/id-preview-f1464c89--605b5f1c-f126-4157-9bca-542e735b6aad.lovable.app-1776815147457.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -68,9 +71,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <I18nProvider>
+    <>
       <Outlet />
       <Toaster richColors position="top-right" />
-    </I18nProvider>
+    </>
   );
 }
