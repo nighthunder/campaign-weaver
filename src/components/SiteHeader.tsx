@@ -22,7 +22,6 @@ export function SiteHeader() {
           {user && <Link to="/jobs" className="hover:underline">{t("nav.jobs")}</Link>}
         </nav>
         <div className="flex items-center gap-2">
-          <LanguageSwitcher />
           {user ? (
             <>
               <span className="hidden text-sm text-muted-foreground lg:inline">
@@ -52,6 +51,7 @@ export function SiteHeader() {
               </Link>
             </>
           )}
+          <LanguageSwitcher />
         </div>
       </div>
     </header>
