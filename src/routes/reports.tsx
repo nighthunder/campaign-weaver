@@ -3,6 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { useStore } from "@/lib/mock-store";
 import { StatusBadge } from "./dashboard";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/reports")({
   component: ReportsPage,
@@ -11,16 +12,17 @@ export const Route = createFileRoute("/reports")({
 
 function ReportsPage() {
   const { campaigns } = useStore();
+  const { t } = useI18n();
 
   return (
-    <AppShell title="Delivery reports">
+    <AppShell title={t("reports.title")}>
       <div className="grid gap-4">
         {campaigns.map((c) => {
           const data = [
-            { name: "Delivered", value: c.delivered, color: "var(--success)" },
-            { name: "Opened", value: c.opened, color: "var(--primary)" },
-            { name: "Clicked", value: c.clicked, color: "var(--accent)" },
-            { name: "Bounced", value: c.bounced, color: "var(--destructive)" },
+            { name: t("reports.delivered"), value: c.delivered, color: "var(--success)" },
+            { name: t("reports.opens"), value: c.opened, color: "var(--primary)" },
+            { name: t("reports.clicks"), value: c.clicked, color: "var(--accent)" },
+            { name: t("reports.bounced"), value: c.bounced, color: "var(--destructive)" },
           ].filter((d) => d.value > 0);
 
           return (
@@ -34,12 +36,12 @@ function ReportsPage() {
               </div>
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="grid grid-cols-2 gap-3">
-                  <Metric label="Recipients" value={c.recipients.toLocaleString()} />
-                  <Metric label="Delivered" value={c.delivered.toLocaleString()} pct={c.recipients ? (c.delivered / c.recipients) * 100 : 0} />
-                  <Metric label="Opens" value={c.opened.toLocaleString()} pct={c.delivered ? (c.opened / c.delivered) * 100 : 0} />
-                  <Metric label="Clicks" value={c.clicked.toLocaleString()} pct={c.delivered ? (c.clicked / c.delivered) * 100 : 0} />
-                  <Metric label="Bounced" value={c.bounced.toLocaleString()} pct={c.recipients ? (c.bounced / c.recipients) * 100 : 0} tone="bad" />
-                  <Metric label="CTR" value={`${c.opened ? ((c.clicked / c.opened) * 100).toFixed(1) : "0"}%`} />
+                  <Metric label={t("reports.recipients")} value={c.recipients.toLocaleString()} />
+                  <Metric label={t("reports.delivered")} value={c.delivered.toLocaleString()} pct={c.recipients ? (c.delivered / c.recipients) * 100 : 0} />
+                  <Metric label={t("reports.opens")} value={c.opened.toLocaleString()} pct={c.delivered ? (c.opened / c.delivered) * 100 : 0} />
+                  <Metric label={t("reports.clicks")} value={c.clicked.toLocaleString()} pct={c.delivered ? (c.clicked / c.delivered) * 100 : 0} />
+                  <Metric label={t("reports.bounced")} value={c.bounced.toLocaleString()} pct={c.recipients ? (c.bounced / c.recipients) * 100 : 0} tone="bad" />
+                  <Metric label={t("reports.ctr")} value={`${c.opened ? ((c.clicked / c.opened) * 100).toFixed(1) : "0"}%`} />
                 </div>
                 <div className="h-56">
                   {data.length > 0 ? (
@@ -54,7 +56,7 @@ function ReportsPage() {
                     </ResponsiveContainer>
                   ) : (
                     <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-                      Send the campaign to see metrics.
+                      {t("reports.empty")}
                     </div>
                   )}
                 </div>

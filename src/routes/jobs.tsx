@@ -6,6 +6,7 @@ import { useStore, store, type Job } from "@/lib/mock-store";
 import { StatusBadge } from "./dashboard";
 import { RefreshCw, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/jobs")({
   component: JobsPage,
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/jobs")({
 
 function JobsPage() {
   const { jobs } = useStore();
+  const { t } = useI18n();
   const [filter, setFilter] = useState<"all" | Job["status"]>("all");
 
   const counts = {
@@ -26,31 +28,34 @@ function JobsPage() {
 
   const filtered = filter === "all" ? jobs : jobs.filter((j) => j.status === filter);
 
+  const labels: Record<string, string> = {
+    pending: t("jobs.s.pending"),
+    processing: t("jobs.s.processing"),
+    completed: t("jobs.s.completed"),
+    failed: t("jobs.s.failed"),
+    dlq: t("jobs.s.dlq"),
+    all: t("jobs.s.all"),
+  };
+
   return (
-    <AppShell title="Jobs & Queues">
+    <AppShell title={t("side.jobs")}>
       <div className="mb-6 grid gap-3 md:grid-cols-5">
-        {[
-          { k: "pending", l: "Pending", c: "secondary" },
-          { k: "processing", l: "Processing", c: "warning" },
-          { k: "completed", l: "Completed", c: "success" },
-          { k: "failed", l: "Failed", c: "destructive" },
-          { k: "dlq", l: "Dead-letter", c: "destructive" },
-        ].map((s) => (
+        {(["pending", "processing", "completed", "failed", "dlq"] as const).map((k) => (
           <button
-            key={s.k}
-            onClick={() => setFilter(s.k as Job["status"])}
+            key={k}
+            onClick={() => setFilter(k)}
             className={`rounded-xl border-2 border-ink p-4 text-left shadow-brutal-sm transition hover:-translate-y-0.5 ${
-              filter === s.k ? "bg-primary" : "bg-card"
+              filter === k ? "bg-primary" : "bg-card"
             }`}
           >
-            <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">{s.l}</p>
-            <p className="mt-1 font-display text-2xl font-bold">{counts[s.k as keyof typeof counts]}</p>
+            <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">{labels[k]}</p>
+            <p className="mt-1 font-display text-2xl font-bold">{counts[k]}</p>
           </button>
         ))}
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <span className="text-sm font-bold">Filter:</span>
+        <span className="text-sm font-bold">{t("jobs.filter")}</span>
         {(["all", "pending", "processing", "completed", "failed", "dlq"] as const).map((f) => (
           <button
             key={f}
@@ -59,7 +64,7 @@ function JobsPage() {
               filter === f ? "bg-ink text-cream" : "bg-card hover:bg-secondary"
             }`}
           >
-            {f}
+            {labels[f]}
           </button>
         ))}
       </div>
@@ -69,13 +74,13 @@ function JobsPage() {
           <table className="w-full text-sm">
             <thead className="bg-ink text-cream">
               <tr className="text-left text-xs font-bold uppercase tracking-wide">
-                <th className="px-4 py-3">Job ID</th>
-                <th className="px-4 py-3">Campaign</th>
-                <th className="px-4 py-3">Queue</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Attempts</th>
-                <th className="px-4 py-3">Created</th>
-                <th className="px-4 py-3">Actions</th>
+                <th className="px-4 py-3">{t("jobs.col.id")}</th>
+                <th className="px-4 py-3">{t("jobs.col.campaign")}</th>
+                <th className="px-4 py-3">{t("jobs.col.queue")}</th>
+                <th className="px-4 py-3">{t("jobs.col.status")}</th>
+                <th className="px-4 py-3">{t("jobs.col.attempts")}</th>
+                <th className="px-4 py-3">{t("jobs.col.created")}</th>
+                <th className="px-4 py-3">{t("jobs.col.actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -97,10 +102,10 @@ function JobsPage() {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => { store.retryJob(j.id); toast.success(`Re-queued ${j.id}`); }}
+                        onClick={() => { store.retryJob(j.id); toast.success(t("jobs.requeued", { id: j.id })); }}
                         className="border-2 border-ink h-7 text-xs"
                       >
-                        <RefreshCw className="mr-1 h-3 w-3" /> Retry
+                        <RefreshCw className="mr-1 h-3 w-3" /> {t("jobs.retry")}
                       </Button>
                     )}
                   </td>
@@ -115,8 +120,8 @@ function JobsPage() {
         <div className="mt-6 flex items-start gap-3 rounded-xl border-2 border-ink bg-destructive/10 p-4">
           <AlertTriangle className="h-5 w-5 shrink-0 text-destructive" />
           <div>
-            <p className="font-bold">You have {counts.dlq} job(s) in the dead-letter queue.</p>
-            <p className="text-sm text-muted-foreground">These exhausted all retries. Inspect the payload, fix the root cause, and re-dispatch from above.</p>
+            <p className="font-bold">{t("jobs.dlq.warn", { n: counts.dlq })}</p>
+            <p className="text-sm text-muted-foreground">{t("jobs.dlq.help")}</p>
           </div>
         </div>
       )}
