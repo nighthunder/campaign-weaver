@@ -421,7 +421,7 @@ const es: Dict = {
   "footer.product": "Producto",
   "footer.builtwith": "Construido con",
   "footer.company": "Compañía",
-  "footer.copy": "Hecho para portafolios senior.",
+  "footer.copy": "Valuing your time by leveraging.",
   "login.title": "Bienvenido de vuelta",
   "login.desc": "Inicia sesión para gestionar tus campañas.",
   "login.email": "Correo",
