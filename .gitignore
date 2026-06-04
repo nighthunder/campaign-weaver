@@ -7,6 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# JavaScript / Node / Build tools
 node_modules
 dist
 dist-ssr
@@ -30,3 +31,35 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# =========================================================================
+# Laravel / PHP Specific
+# =========================================================================
+
+# Vendor dependencies
+/vendor
+
+# Environment configuration (CRITICAL: Never commit your app keys/passwords)
+.env
+.env.backup
+.env.production
+
+# Laravel temporary bootstrap & cache files
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+
+# Storage directory (keeps logs, sessions, and uploads local)
+/storage/*.key
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+
+# If you use Laravel Herd / Valet
+.lighthouse/
+
+# Local development extras
+.phpunit.result.cache
+.phpstorm.meta.php
+_ide_helper*.php
+.php-cs-fixer.cache
