@@ -1,79 +1,82 @@
 # Campaign Weaver - Backend
 
-Uma plataforma moderna de **email marketing** com suporte a filas assíncronas, workers distribuídos, Redis caching e integração com MailerSend. Arquitetura escalável em Docker.
+A modern email marketing platform with support for asynchronous queues, distributed workers, Redis caching, and MailerSend integration. Scalable architecture built on Docker.
 
-## 🎯 Características
+## 🎯 Features
 
-- **✅ Laravel 11** - Framework PHP moderno
-- **✅ Filas Assíncronas** - Redis com múltiplos workers (mails, default, reports)
-- **✅ Workers Distribuídos** - 3 workers especializados com retry/backoff exponencial
+- **✅ Laravel 11** - Modern PHP Framework
+- **✅ Asynchronous Queues** - Redis with multiple workers (mails, default, reports)
+- **✅ Distributed Workers** - 3 specialized workers with exponential retry/backoff
 - **✅ Redis** - Cache, sessions, queues, rate limiting
-- **✅ Horizon Dashboard** - Monitoramento de filas em tempo real
-- **✅ Email Marketing** - Integração com MailerSend (SMTP)
-- **✅ Autenticação API** - Laravel Sanctum com tokens pessoais
-- **✅ Docker Compose** - Setup completo com serviços (PHP, Nginx, MySQL, Redis)
-- **✅ Batch Processing** - Envio de campanhas em lotes otimizados
-- **✅ Webhooks** - Rastreamento de eventos de email (opens, clicks, bounces)
-- **✅ Métricas & Analytics** - Cache de métricas com Redis
+- **✅ Horizon Dashboard** - Real-time queue monitoring
+- **✅ Email Marketing** - Integration with MailerSend (SMTP)
+- **✅ API Authentication** - Laravel Sanctum with personal access tokens
+- **✅ Docker Compose** - Complete setup with services (PHP, Nginx, MySQL, Redis)
+- **✅ Batch Processing** - Optimized batch sending of campaigns
+- **✅ Webhooks** - Tracking of email events (opens, clicks, bounces)
+- **✅ Metrics & Analytics** - Metric caching with Redis
 
-## 📋 Requisitos
+## 📋 Requirements
 
 - **Docker** & **Docker Compose**
-- **Composer** (opcional, para instalar deps localmente)
-- **PHP 8.2+** (se rodar sem Docker)
-- **MySQL 8.0+** ou equivalente
+- **Composer** (optional, to run without Docker)
+- **PHP 8.2+** (if you run without Docker)
+- **MySQL 8.0+** ou equivalent
 - **Redis 7+**
 
 ## 🚀 Quick Start
 
-### 1. Clonar e configurar
+### 1. Clone and configure
 
 ```bash
-# Clone o repositório
+# Clone the repository
 git clone https://github.com/seu-repo/campaign-weaver.git
 cd campaign-weaver/laravel-backend
 ```
 
-# Copiar arquivo de ambiente
+# Copy environment file
 cp .env.example .env
 
-# Instalar dependências (se não usar Docker)
-composer installPronto! Criei um **README.md profissional e completo** com:
+# Install dependencies (if not using Docker)
+composer install
+
+# Ready! Create a **README.md profissional e completo** with:
 
 ✅ **Seções principais:**
-- 🎯 Características
-- 📋 Requisitos
+- 🎯 Features
+- 📋 Requirements
 - 🚀 Quick Start (4 passos)
-- 📁 Estrutura do projeto
-- 🔌 Todos os endpoints da API (com exemplos de request/response)
-- 🔄 Sistema de filas detalhado
-- 💾 Banco de dados
-- 🔐 Autenticação
+- 📁 Project Structure
+- 🔌 All API Endpoints (with request/response examples)
+- 🔄 Detailed Queue System
+- 💾 Database
+- 🔐 Authentication
 - 📧 Integração MailerSend
 - 🗄️ Redis Caching
 - 📊 Logs
 - 🧪 Exemplos com cURL
 - 🛠️ Troubleshooting
 - 🚢 Deploy production
-# Ver status das filas
+
+# See queues statuses
+```
 docker-compose exec app php artisan queue:metrics
+```
 
-
-
-# Monitoramento de Filas
+# Queues monitoring
 Via Artisan Commands
 
-# Processar jobs manualmente (útil para debug)
+# Process jobs manually (useful for debug)
 ```
 docker-compose exec app php artisan queue:work redis --queue=mails
 ```
 
-# Limpar filas (CUIDADO - remove todos jobs)
+# Cleaning queues (CAREFULLY - remove all jobs)
 ```
 docker-compose exec app php artisan queue:flush redis
 ```
 
-# Retry de jobs falhados
+# Retry of failed jobs
 ```
 docker-compose exec app php artisan queue:retry-batch batch_id
 ```
@@ -97,12 +100,12 @@ command: php artisan queue:work redis --queue=reports --sleep=5 --tries=2 --time
 
 🚢 Deploy (Production)
 
-# Build otimizado
+# Optimized build
 ```
 docker build -t campaign-weaver:latest .
 ```
 
-# Push para registry
+# Push to registry
 ```
 docker tag campaign-weaver:latest seu-registry.com/campaign-weaver:latest
 docker push seu-registry.com/campaign-weaver:latest
@@ -115,54 +118,54 @@ export APP_DEBUG=false
 export APP_DEBUG=false
 ```
 
-Verificar Redis
+Verifying Redis
 
-# Conectar ao Redis
+# Connect to Redis CLI
 ```
 docker-compose exec redis redis-cli
 ```
 
-# Ver todas as chaves
+# See all the keys (BE CAREFUL - it could be a lot of data in production)
 ```
 KEYS *
 ```
 
-# Ver uso de memória
+# See memory usage
 ```
 INFO memory
 ```
 
-# Flush all (CUIDADO!)
+# Flush all (BE CAREFUL!)
 ```
 FLUSHALL
 ```
 
 📊 Logs
-Visualizar Logs
+Visualize Logs
 
-# Logs do app
+# App's logs
 ```
 docker-compose logs -f app
 ```
 
-# Logs de um worker
+# Workers logs
 ```
 docker-compose logs -f worker1
 ```
 
-# Logs de erro
+# Error logs
 ```
 docker-compose exec app tail -f storage/logs/laravel.log
 ```
 
-Configure em .env:
+Log configuration in .env:
 ```
 LOG_LEVEL=debug  # debug, info, notice, warning, error, critical, alert, emergency
 ```
 
-Níveis de Log
+Log levels:
 
-🧪 Testando a API
+🧪 Testing the API with cURL
 
 # 1. Register
 ```
@@ -186,13 +189,13 @@ TOKEN=$(curl -X POST http://localhost:8080/api/login \
 }' | jq -r '.token')
 ```
 
-# 3. Listar campanhas
+# 3. Listing campaigns
 ```
 curl -H "Authorization: Bearer $TOKEN" \
 http://localhost:8080/api/campaigns
 ```
 
-# 4. Criar contato lista
+# 4. Create a contact list
 ```
 curl -X POST http://localhost:8080/api/contact-lists \
 -H "Authorization: Bearer $TOKEN" \
@@ -200,7 +203,7 @@ curl -X POST http://localhost:8080/api/contact-lists \
 -d '{"name":"My List","description":"Test list"}'
 ```
 
-# 5. Importar contatos
+# 5. Import contacts
 ```
 curl -X POST http://localhost:8080/api/contact-lists/import \
 -H "Authorization: Bearer $TOKEN" \
@@ -214,7 +217,7 @@ curl -X POST http://localhost:8080/api/contact-lists/import \
 }'
 ```
 
-# 6. Criar campanha
+# 6. Create Campaign
 ```
 CAMPAIGN=$(curl -X POST http://localhost:8080/api/campaigns \
 -H "Authorization: Bearer $TOKEN" \
@@ -227,7 +230,7 @@ CAMPAIGN=$(curl -X POST http://localhost:8080/api/campaigns \
 }' | jq -r '.id')
 ```
 
-# 7. Fila campanha
+# 7. Queue Campaign
 ```
 curl -X POST http://localhost:8080/api/campaigns/$CAMPAIGN/queue \
 -H "Authorization: Bearer $TOKEN" \
@@ -235,7 +238,7 @@ curl -X POST http://localhost:8080/api/campaigns/$CAMPAIGN/queue \
 -d '{"contact_list_id":1,"batch_size":100}'
 ```
 
-# 8. Ver métricas
+# 8. Visualize metrics
 ```
 curl -H "Authorization: Bearer $TOKEN" \
 http://localhost:8080/api/campaigns/$CAMPAIGN/metrics
@@ -243,71 +246,71 @@ http://localhost:8080/api/campaigns/$CAMPAIGN/metrics
 
 
 🛠️ Troubleshooting
-Workers não processam jobs
+Workers dont process jobs
 
 # Verificar se worker está rodando
 ```
 docker-compose ps | grep worker
 ```
 
-# Reiniciar workers
+# Restart workers
 ```
 docker-compose restart worker1 worker2 worker3
 ```
 
-# Verificar logs
+# Verify logs
 ```
 docker-compose logs -f worker1
 ```
 
-Redis não conecta
+Redis doesn't work
 
-# Verificar se Redis está up
+# Verify if Redis iss up
 ```
 docker-compose exec redis redis-cli ping
 ```
 
-# Reiniciar Redis
+# Restart Redis
 
 ```
 docker-compose restart redis
 ```
 
-Database não conecta
+Database doesn't connect
 
-# Verificar logs MySQL
+# Verify MySQL logs
 ```
 docker-compose logs db
 ```
 
-# Reiniciar
+# Restart
 
 ```
 docker-compose restart db
 docker-compose exec app php artisan migrate
 ```
 
-Emails não enviam
+Emails doesn't send
 
-Verificar configuração de mail
+Verify email configuration in .env:
 ```
 docker-compose exec app php artisan tinker
 ```
 # > config('mail.driver')
 # > config('mail.from')
 
-# Testar envio
+# Testing email sending
 # > \Illuminate\Support\Facades\Mail::raw('Test', function($msg) {
 #     $msg->to('test@example.com');
 #   });
 
-# Verificar logs
+# Verify logs
 ```
 tail -f storage/logs/laravel.log | grep -i mail
 ```
 
-📞 Suporte
-Para dúvidas ou problemas:
+📞 Support
+For support, please contact us through one of the following channels:
 📧 Email: support@example.com
 💬 Discord: [link-do-servidor]
 🐛 Issues: GitHub Issues
